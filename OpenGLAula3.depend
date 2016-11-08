@@ -108,12 +108,11 @@
 	<GL/gl.h>
 	<GL/glu.h>
 
-1478646725 source:c:\users\dennis\dropbox (palmsoft)\disciplinas\disciplina computação grafica - cco\20162\workc++\openglaula3\main.c
+1478649366 source:c:\users\dennis\dropbox (palmsoft)\disciplinas\disciplina computação grafica - cco\20162\workc++\openglaula3\main.c
 	<windows.h>
 	"GL\glew.h"
 	"glut.h"
 	"3DObject.h"
-	<vector>
 	<stdlib.h>
 	"glutil.h"
 	"ModelObj3d.h"

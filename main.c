@@ -2,7 +2,7 @@
 #include "GL\glew.h"
 #include "glut.h"
 #include "3DObject.h"
-#include <vector>
+//#include <vector>
 #include <stdlib.h>
 #include "glutil.h"
 #include "ModelObj3d.h"
@@ -16,15 +16,17 @@ GLuint p, f, v;
 // Globals
 // Real programs don't use globals :-D
 // Data would normally be read from files
-GLfloat vertices[] = {	-1.0f,0.0f,0.0f,
-						0.0f,1.0f,0.0f,
-						0.0f,0.0f,0.0f };
+GLfloat vertices[] = {	-0.8f,-0.8f,0.0f,
+						0.8f,-0.8f,0.0f,
+						-0.8f,0.8f,0.0f };
 GLfloat colours[] = {	1.0f, 0.0f, 0.0f,
 						0.0f, 1.0f, 0.0f,
 						0.0f, 0.0f, 1.0f };
-GLfloat vertices2[] = {	0.0f,0.0f,0.0f,
-						0.0f,-1.0f,0.0f,
-						1.0f,0.0f,0.0f };
+GLfloat vertices2[] = {	0.8f,-0.8f,0.0f,
+						0.8f,0.8f,0.0f,
+						-0.8f,0.8f,0.0f };
+
+float ang = 0;
 
 // two vertex array objects, one for each object drawn
 unsigned int vertexArrayObjID[2];
@@ -185,7 +187,9 @@ void initShaders(void)
 void display(void)
 {
 	// clear the screen
-	glUniform1f( glGetUniformLocation(p,"ang"),45);
+	ang+=0.008;
+	cout << "ang " << ang << endl;
+	glUniform1f( glGetUniformLocation(p,"ang"),ang);
 
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -204,6 +208,11 @@ void display(void)
 void reshape(int w, int h)
 {
 	glViewport(0,0,(GLsizei)w,(GLsizei)h);
+}
+
+void update(int calbac){
+    glutPostRedisplay();
+    glutTimerFunc(5,update,1);
 }
 
 int main (int argc, char* argv[])
@@ -229,6 +238,7 @@ int main (int argc, char* argv[])
 	initShaders();
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
+	glutTimerFunc(5,update,1);
 
 	glutMainLoop();
 	return 0;
