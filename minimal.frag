@@ -11,9 +11,9 @@ void main(void)
 {
 	vec3 color = vec3(0,0,0);
 
-	color.x = pow(ex_Color.x,4);
-	color.y = pow(ex_Color.y,4);
-	color.z = pow(ex_Color.z,4);
+	color.x = ex_Color.x;//pow(ex_Color.x,4);
+	color.y = ex_Color.y;//pow(ex_Color.y,4);
+	color.z = ex_Color.z;//pow(ex_Color.z,4);
 
 	out_Color = vec4(color,1.0);
 	

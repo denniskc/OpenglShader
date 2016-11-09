@@ -16,15 +16,15 @@ GLuint p, f, v;
 // Globals
 // Real programs don't use globals :-D
 // Data would normally be read from files
-GLfloat vertices[] = {	-0.8f,-0.8f,0.0f,
+/*GLfloat vertices[] = {	-0.8f,-0.8f,0.0f,
 						0.8f,-0.8f,0.0f,
 						-0.8f,0.8f,0.0f };
 GLfloat colours[] = {	1.0f, 0.0f, 0.0f,
 						0.0f, 1.0f, 0.0f,
-						0.0f, 0.0f, 1.0f };
-GLfloat vertices2[] = {	0.8f,-0.8f,0.0f,
-						0.8f,0.8f,0.0f,
-						-0.8f,0.8f,0.0f };
+						0.0f, 0.0f, 1.0f };*/
+
+GLfloat *vertices;
+GLfloat *colours;
 
 float ang = 0;
 
@@ -92,35 +92,97 @@ void printShaderInfoLog(GLint shader)
 
 void init(void)
 {
+
+    vertices = new GLfloat[180000];
+    colours = new GLfloat[180000];
+
+    float frax = 0.016;
+
+    int index = 0;
+    float basex = -0.8;
+    float basey = -0.8;
+    for(int i = 0; i < 100; i++){
+        basex = -0.8;
+        for(int j = 0; j < 100; j++){
+            vertices[index] = basex;
+            vertices[index+1] = basey;
+            vertices[index+2] = 0;
+
+            vertices[index+3] = basex+frax;
+            vertices[index+4] = basey;
+            vertices[index+5] = 0;
+
+            vertices[index+6] = basex;
+            vertices[index+7] = basey+frax;
+            vertices[index+8] = 0;
+
+
+            vertices[index+9] = basex+frax;
+            vertices[index+10] = basey;
+            vertices[index+11] = 0;
+
+            vertices[index+12] = basex+frax;
+            vertices[index+13] = basey+frax;
+            vertices[index+14] = 0;
+
+            vertices[index+15] = basex;
+            vertices[index+16] = basey+frax;
+            vertices[index+17] = 0;
+
+            colours[index] = 1;
+            colours[index+1] = 0;
+            colours[index+2] = 0;
+
+            colours[index+3] = 0;
+            colours[index+4] = 1;
+            colours[index+5] = 0;
+
+            colours[index+6] = 0;
+            colours[index+7] = 0;
+            colours[index+8] = 1;
+
+
+            colours[index+9] = 1;
+            colours[index+10] = 0;
+            colours[index+11] = 0;
+
+            colours[index+12] = 0;
+            colours[index+13] = 1;
+            colours[index+14] = 0;
+
+            colours[index+15] = 0;
+            colours[index+16] = 0;
+            colours[index+17] = 1;
+
+            index+=18;
+            basex+=frax;
+        }
+        basey+=frax;
+    }
+
 	// Would load objects from file here - but using globals in this example
 
 	// Allocate Vertex Array Objects
-	glGenVertexArrays(2, &vertexArrayObjID[0]);
+	glGenVertexArrays(1, &vertexArrayObjID[0]);
 	// Setup first Vertex Array Object
 	glBindVertexArray(vertexArrayObjID[0]);
 	glGenBuffers(2, vertexBufferObjID);
 
 	// VBO for vertex data
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjID[0]);
-	glBufferData(GL_ARRAY_BUFFER, 9*sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 180000*sizeof(GLfloat), vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(0);
 
 	// VBO for colour data
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjID[1]);
-	glBufferData(GL_ARRAY_BUFFER, 9*sizeof(GLfloat), colours, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 180000*sizeof(GLfloat), colours, GL_STATIC_DRAW);
 	glVertexAttribPointer((GLuint)1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(1);
 
 	// Setup second Vertex Array Object
 	glBindVertexArray(vertexArrayObjID[1]);
 	glGenBuffers(1, &vertexBufferObjID[2]);
-
-	// VBO for vertex data
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjID[2]);
-	glBufferData(GL_ARRAY_BUFFER, 9*sizeof(GLfloat), vertices2, GL_STATIC_DRAW);
-	glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(0);
 
 	glBindVertexArray(0);
 }
@@ -187,18 +249,15 @@ void initShaders(void)
 void display(void)
 {
 	// clear the screen
-	ang+=0.008;
-	cout << "ang " << ang << endl;
+	ang+=0.08;
+	//cout << "ang " << ang << endl;
 	glUniform1f( glGetUniformLocation(p,"ang"),ang);
 
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glBindVertexArray(vertexArrayObjID[0]);	// First VAO
-	glDrawArrays(GL_TRIANGLES, 0, 3);	// draw first object
+	glDrawArrays(GL_TRIANGLES, 0, 60000);	// draw first object
 
-	glBindVertexArray(vertexArrayObjID[1]);		// select second VAO
-	glVertexAttrib3f((GLuint)1, 1.0, 0.0, 0.0); // set constant color attribute
-	glDrawArrays(GL_TRIANGLES, 0, 3);	// draw second object
 
 	glBindVertexArray(0);
 
