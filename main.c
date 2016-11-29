@@ -9,6 +9,12 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace std;
 
@@ -32,6 +38,14 @@ float ang = 0;
 unsigned int vertexArrayObjID[2];
 // three vertex buffer objects in this example
 unsigned int vertexBufferObjID[3];
+
+glm::mat4x4 projection;
+glm::mat4x4 model;
+glm::mat4x4 view;
+
+float viewAngle = 45;
+
+float cx,cy,cz;
 
 // loadFile - loads text file into char* fname
 // allocates memory - so need to delete after use
@@ -185,6 +199,14 @@ void init(void)
 	glGenBuffers(1, &vertexBufferObjID[2]);
 
 	glBindVertexArray(0);
+
+	projection = glm::perspective(glm::radians(45.0f), 800 / 600.0f, 0.1f, 100.f);
+	model = glm::mat4();
+	view = glm::rotate(glm::mat4(),glm::radians(45.0f),glm::vec3(1.0,0,0));
+
+	cx = cy = 0;
+	cz = -4;
+
 }
 
 
@@ -250,6 +272,17 @@ void display(void)
 {
 	// clear the screen
 	ang+=0.08;
+
+	//viewAngle+=0.1;
+
+	view = glm::translate(glm::mat4(),glm::vec3(cx,cy,cz));
+	view = glm::rotate(view,glm::radians(viewAngle),glm::vec3(1.0,0,0));
+
+
+    glUniformMatrix4fv( glGetUniformLocation( p, "projection" ), 1, GL_FALSE, glm::value_ptr( projection ) );
+    glUniformMatrix4fv( glGetUniformLocation( p, "model" ), 1, GL_FALSE, glm::value_ptr( model ) );
+    glUniformMatrix4fv( glGetUniformLocation( p, "view" ), 1, GL_FALSE, glm::value_ptr( view ) );
+
 	//cout << "ang " << ang << endl;
 	glUniform1f( glGetUniformLocation(p,"ang"),ang);
 
@@ -274,6 +307,40 @@ void update(int calbac){
     glutTimerFunc(5,update,1);
 }
 
+void keyboard(unsigned char key, int x, int y)
+{
+    //std::cout << "key " << (int)key << std::endl;
+
+    switch(key) {
+        case 'o':
+            viewAngle++;
+        break;
+        case 'l':
+            viewAngle--;
+        break;
+        case 'w':
+            cy+=0.1;
+        break;
+        case 's':
+             cy-=0.1;
+        break;
+        case 'a':
+            cx-=0.1;
+        break;
+        case 'd':
+            cx+=0.1;
+        break;
+        case 'q':
+            cz+=0.1;
+        break;
+        case 'e':
+            cz-=0.1;
+        break;
+        default:
+        break;
+    }
+}
+
 int main (int argc, char* argv[])
 {
 
@@ -295,6 +362,7 @@ int main (int argc, char* argv[])
 
 	init();
 	initShaders();
+    glutKeyboardFunc(keyboard);
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
 	glutTimerFunc(5,update,1);
